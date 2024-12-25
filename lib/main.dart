@@ -19,6 +19,9 @@ class MyApp extends StatelessWidget {
           dividerColor: Colors.white24,
           appBarTheme: const AppBarTheme(
               backgroundColor: Color.fromARGB(255, 31, 31, 31),
+              iconTheme: IconThemeData(
+                color: Colors.white,
+              ),
               titleTextStyle: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -32,47 +35,83 @@ class MyApp extends StatelessWidget {
                 fontWeight: FontWeight.w700,
                 fontSize: 14),
           )),
-      home: const MyHomePage(title: 'Crypto Logic'),
+      routes: {
+        "/": (context) => CryptoListScreen(title: 'Crypto Logic'),
+        "/coin": (context) => CryptoCoinScreen()
+      },
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
+class CryptoListScreen extends StatefulWidget {
+  const CryptoListScreen({super.key, required this.title});
   final String title;
-
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<CryptoListScreen> createState() => _CryptoListScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _CryptoListScreenState extends State<CryptoListScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: theme.appBarTheme.backgroundColor,
         title: Text(widget.title),
       ),
       body: ListView.separated(
-          itemCount: 10,
-          separatorBuilder: (context, i) => Divider(
-                color: theme.dividerColor,
-              ),
-          itemBuilder: (context, i) => ListTile(
-                leading: SvgPicture.asset(
-                  "assets/svg/bitcoin-logo.svg",
-                  height: 35,
-                  width: 35,
-                ),
-                title: Text("Bitcoin", style: theme.textTheme.bodyMedium),
-                subtitle: Text("100 000\$", style: theme.textTheme.labelSmall),
-                trailing: Icon(
-                  Icons.arrow_forward_ios,
-                ),
-              )),
+        itemCount: 10,
+        separatorBuilder: (context, i) => Divider(
+          color: theme.dividerColor,
+        ),
+        itemBuilder: (context, i) {
+          const coinName = "Bitcoin";
+          return ListTile(
+            leading: SvgPicture.asset(
+              "assets/svg/bitcoin-logo.svg",
+              height: 35,
+              width: 35,
+            ),
+            title: Text(coinName, style: theme.textTheme.bodyMedium),
+            subtitle: Text("100 000\$", style: theme.textTheme.labelSmall),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+            ),
+            onTap: () {
+              Navigator.of(context).pushNamed("/coin", arguments: coinName);
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class CryptoCoinScreen extends StatefulWidget {
+  const CryptoCoinScreen({super.key});
+
+  @override
+  State<CryptoCoinScreen> createState() => _CryptoCoinScreenState();
+}
+
+class _CryptoCoinScreenState extends State<CryptoCoinScreen> {
+  String? coinName;
+  @override
+  void didChangeDependencies() {
+    final args = ModalRoute.of(context)?.settings.arguments;
+    assert(args != null && args is String, "Ошибка, не передали arguments");
+    coinName = args as String;
+    setState(() {});
+    super.didChangeDependencies();
+  }
+
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(coinName ?? "..."),
+        backgroundColor: theme.appBarTheme.backgroundColor,
+      ),
     );
   }
 }

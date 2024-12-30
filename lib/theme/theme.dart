@@ -14,6 +14,8 @@ final darkTheme = ThemeData(
             color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)),
     listTileTheme: const ListTileThemeData(iconColor: Colors.white),
     textTheme: TextTheme(
+      headlineMedium: const TextStyle(
+          color: Colors.white, fontWeight: FontWeight.w500, fontSize: 24),
       bodyMedium: const TextStyle(
           color: Colors.white, fontWeight: FontWeight.w500, fontSize: 20),
       labelSmall: TextStyle(
